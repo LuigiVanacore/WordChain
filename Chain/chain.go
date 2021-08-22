@@ -6,36 +6,32 @@ import (
 	"strings"
 )
 
-
-
 // Chain struct that contains list
 type Chain struct {
-	words []string
+	words     []string
 	startWord string
-	lastWord string
-	result *[]string
+	lastWord  string
+	result    *[]string
 }
 
 func New(dictionary *Dictionary.Dictionary, startWord, lastWord string) *Chain {
 	if len(startWord) != len(lastWord) {
 		log.Fatal("start and end words must have the same size")
 	}
-	if !dictionary.Contain(startWord)  {
+	if !dictionary.Contain(startWord) {
 		log.Fatal("startWord not present in the Dictionary")
 	}
-	if !dictionary.Contain(lastWord)  {
+	if !dictionary.Contain(lastWord) {
 		log.Fatal("lastWord not present in the Dictionary")
 	}
-	chain :=  &Chain{startWord: startWord, lastWord: lastWord}
+	chain := &Chain{startWord: startWord, lastWord: lastWord}
 	chain.filteringWords(dictionary)
-	var  slice []string
+	var slice []string
 	chain.result = &slice
 	return chain
 }
 
-
-
-func (c *Chain)  filteringWords(dictionary *Dictionary.Dictionary) {
+func (c *Chain) filteringWords(dictionary *Dictionary.Dictionary) {
 	c.words = []string{}
 	l := len(c.startWord)
 	for _, w := range dictionary.GetWords() {
@@ -50,7 +46,7 @@ type node struct {
 	word    string
 }
 
-func (c *Chain) Solve()   []string{
+func (c *Chain) Solve() []string {
 	toVisit := []node{
 		node{
 			word:    c.startWord,
@@ -79,8 +75,6 @@ func (c *Chain) Solve()   []string{
 	return *c.result
 }
 
-
-
 func visit(chain []node, res *[]string) {
 	if chain == nil {
 		return
@@ -89,9 +83,9 @@ func visit(chain []node, res *[]string) {
 	visit(chain[0].parents, res)
 }
 
-func contains(el string, arr *[]string) bool {
-	for _, a := range *arr {
-		if strings.Compare(el, a) == 0 {
+func contains(word string, words *[]string) bool {
+	for _, w := range *words {
+		if strings.Compare(word, w) == 0 {
 			return true
 		}
 	}
@@ -100,14 +94,13 @@ func contains(el string, arr *[]string) bool {
 
 // getNeighborhoods return  the  word
 // with 1 character of difference from the given word
-func getNeighborhoods(word string, universe, neigh *[]string) {
-	for _, w := range *universe {
+func getNeighborhoods(word string, chain, neighborhood *[]string) {
+	for _, w := range *chain {
 		if isNeighborhood(w, word) {
-			*neigh = append(*neigh, w)
+			*neighborhood = append(*neighborhood, w)
 		}
 	}
 }
-
 
 func isNeighborhood(w, word string) bool {
 	var diff int
@@ -118,6 +111,3 @@ func isNeighborhood(w, word string) bool {
 	}
 	return diff == 1
 }
-
-
-
